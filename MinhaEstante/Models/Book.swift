@@ -20,7 +20,7 @@ struct Book: Identifiable, Codable {
     var author: String
     var coverImageURL: URL? // opcional, para a capa do livro
     var totalPages: Int
-    var Status: BookStatus
+    var status: BookStatus
     
 //    acompanhamento de leitura
     var readingSessions: [ReadingSession] = []
@@ -40,6 +40,6 @@ struct Book: Identifiable, Codable {
         self.title = title
         self.author = author
         self.totalPages = totalPages
-        self.Status = status
+        self.status = status
     }
 }
