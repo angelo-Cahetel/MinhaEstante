@@ -16,13 +16,14 @@ class LibraryViewModel: ObservableObject {
         }
     }
     
-    private let userDefaults = "myLibraryBooks"
+    private let userDefaultsKey = "myLibraryBooks"
     
     init() {
         // carrga os livros ao iniciar
         loadBooks()
     }
     
+    //    MARK: - Public Methods
     // retorna livros filtrados por status
     func books(for status: BookStatus) -> [Book] {
         books.filter { $0.status == status }
@@ -37,43 +38,49 @@ class LibraryViewModel: ObservableObject {
         books.append(newBook)
     }
     
-//    adiciona uma sessão de leitura a um livro
+    //    adiciona uma sessão de leitura a um livro
     func logReadingSession(for bookId: UUID, pagesRead: Int, date: Date = Date()) {
-        guard let index = books.firstIndex(where: { $0.id == bookId }) else { return }
+        guard let index = getIndex(for: bookId) else { return }
         let session = ReadingSession(date: date, pagesRead: pagesRead)
         books[index].readingSessions.append(session)
     }
     
-//    adiciona uma resenha e avaliação
+    //    adiciona uma resenha e avaliação
     func addReview(for bookId: UUID, rating: Int, reviewText: String) {
-        guard let index = books.firstIndex(where: { $0.id == bookId }) else { return }
+        guard let index = getIndex(for: bookId) else { return }
         books[index].rating = rating
         books[index].review = reviewText
-//        muda status para "Lido"
+        //        muda status para "Lido"
         books[index].status = .finished
     }
     
     // move um livro para a estante "Lendo atualmente"
     func startReading(bookId: UUID) {
-        guard let index = books.firstIndex(where: { $0.id == bookId }) else { return }
+        guard let index = getIndex(for: bookId) else { return }
         books[index].status = .reading
     }
     
-/*  ---  persistencia de Dados (simples com UserDefaults) ---
-    todo: adicionar CoreData
- */
+//    MARK: - Private Helper Methods
+    private func getIndex(for bookId: UUID) -> Int? {
+        books.firstIndex(where: { $0.id == bookId })
+    }
+    
+//    MARK: - Data Persistence
+    /*  ---  persistencia de Dados (simples com UserDefaults) ---
+     todo: adicionar CoreData
+     */
     private func saveBooks() {
         if let encodeData = try? JSONEncoder().encode(books) {
-            UserDefaults.standard.set(encodeData, forKey: "userDefaultsKey")
+            UserDefaults.standard.set(encodeData, forKey: userDefaultsKey)
         }
     }
     
     private func loadBooks() {
         if let savedData = UserDefaults.standard.data(forKey: userDefaultsKey),
-           let decodedBooks = try? JSONDEcoder().decode([Book].self, from: savedData) {
+           let decodedBooks = try? JSONDecoder().decode([Book].self, from: savedData) {
             self.books = decodedBooks
         } else {
-//            adiciona dados de exemplo se não houver nada salvo
+            //            adiciona dados de exemplo se não houver nada salvo
             self.books = [
                 Book(title: "O Hobbit", author: "J.R.R Tolkien", totalPages: 310, status: .reading),
                 Book(title: "Duna", author: "Frank Herbert", totalPages: 688, status: .toRead)

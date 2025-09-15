@@ -39,10 +39,10 @@ struct ContentView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showingAddBookSheet) {
-                AddBookView()
-                    .environmentObject(viewModel)
-            }
+        }
+        .sheet(isPresented: $showingAddBookSheet) {
+            AddBookView()
+                .environmentObject(viewModel)
         }
     }
     
@@ -55,7 +55,7 @@ struct ContentView: View {
     }
 }
 
-struct BookView: View {
+struct BookRowView: View {
     let book: Book
     
     var body: some View {
