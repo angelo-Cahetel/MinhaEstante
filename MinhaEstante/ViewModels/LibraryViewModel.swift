@@ -41,8 +41,9 @@ class LibraryViewModel: ObservableObject {
     //    adiciona uma sessão de leitura a um livro
     func logReadingSession(for bookId: UUID, pagesRead: Int, date: Date = Date()) {
         guard let index = getIndex(for: bookId) else { return }
-        let session = ReadingSession(date: date, pagesRead: pagesRead)
-        books[index].readingSessions.append(session)
+        var updated = books[index]
+        updated.readingSessions.append(ReadingSession(date: date, pagesRead: pagesRead))
+        books[index] = updated
     }
     
     //    adiciona uma resenha e avaliação

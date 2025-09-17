@@ -46,13 +46,10 @@ struct BookDetailView: View {
                     if book.readingSessions.isEmpty {
                         Text("Nenhuma leitura registrada.").foregroundColor(.secondary)
                     } else {
-                        ForEach(book.readingSessions.sorted(by: { $0.date > $1.date }), id: \.id) { session in
-                            HStack {
-                                Text(session.date, style: .date)
-                                Spacer()
-                                Text("\(session.pagesRead) páginas")
+                        ForEach($viewModel.books) { $book in
+                            NavigationLink(book.title) {
+                                BookDetailView(book: $book)
                             }
-                            .padding(.vertical, 2)
                         }
                     }
                 }
