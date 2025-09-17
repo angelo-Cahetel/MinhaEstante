@@ -46,7 +46,7 @@ struct BookDetailView: View {
                     if book.readingSessions.isEmpty {
                         Text("Nenhuma leitura registrada.").foregroundColor(.secondary)
                     } else {
-                        ForEach(book.readingSessions.sorted(by: { $0.date > $1.date })) { session in
+                        ForEach(book.readingSessions.sorted(by: { $0.date > $1.date }), id: \.id) { session in
                             HStack {
                                 Text(session.date, style: .date)
                                 Spacer()
